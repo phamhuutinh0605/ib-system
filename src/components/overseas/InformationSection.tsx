@@ -1,12 +1,17 @@
 import React from 'react';
+import { UseFormReturn } from 'react-hook-form';
+import { OverseasTransferFormData } from '@/lib/schemas/overseasTransferSchema';
 
 type InformationSectionProps = {
-  purpose: string;
-  instruction: string;
-  onChange: (field: 'purpose'|'instruction', value: string) => void;
+  form: UseFormReturn<OverseasTransferFormData>;
 };
 
-export default function InformationSection({ purpose, instruction, onChange }: InformationSectionProps) {
+export default function InformationSection({ form }: InformationSectionProps) {
+  const {
+    register,
+    formState: { errors },
+  } = form;
+
   return (
     <section className="mb-6">
       <h2 className="text-lg font-semibold mb-3">Information</h2>
@@ -16,11 +21,16 @@ export default function InformationSection({ purpose, instruction, onChange }: I
             Transaction Description / Purpose
           </label>
           <input
-            className="w-full rounded-md border p-2"
-            value={purpose}
-            onChange={(e) => onChange('purpose', e.target.value)}
+            {...register('purpose')}
+            className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Purpose of transfer"
+            aria-invalid={!!errors.purpose}
           />
+          {errors.purpose && (
+            <p className="text-sm text-destructive mt-1" role="alert">
+              {errors.purpose.message}
+            </p>
+          )}
         </div>
 
         <div>
@@ -28,12 +38,17 @@ export default function InformationSection({ purpose, instruction, onChange }: I
             Instruction / Additional Information
           </label>
           <textarea
-            className="w-full rounded-md border p-2"
+            {...register('instruction')}
+            className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-primary"
             rows={3}
-            value={instruction}
-            onChange={(e) => onChange('instruction', e.target.value)}
             placeholder="Optional instruction"
+            aria-invalid={!!errors.instruction}
           />
+          {errors.instruction && (
+            <p className="text-sm text-destructive mt-1" role="alert">
+              {errors.instruction.message}
+            </p>
+          )}
         </div>
       </div>
     </section>

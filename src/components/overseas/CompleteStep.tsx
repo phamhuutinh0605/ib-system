@@ -1,24 +1,13 @@
 import React from 'react';
-
-type TransferFormState = {
-  fromAccount: string;
-  beneficiaryName: string;
-  beneficiaryAccount: string;
-  bankName: string;
-  amount: string;
-  currency: string;
-  purpose: string;
-  instruction: string;
-  confirmPurpose: boolean;
-};
+import { OverseasTransferFormData } from '@/lib/schemas/overseasTransferSchema';
 
 type CompleteStepProps = {
-  form: TransferFormState;
+  formData: OverseasTransferFormData;
   onContinue: () => void;
   onNext: () => void;
 };
 
-export default function CompleteStep({ form, onContinue, onNext }: CompleteStepProps) {
+export default function CompleteStep({ formData, onContinue, onNext }: CompleteStepProps) {
   return (
     <div className="bg-card rounded-lg border p-6 mb-6">
       <div className="text-center mb-6">
@@ -35,11 +24,11 @@ export default function CompleteStep({ form, onContinue, onNext }: CompleteStepP
           <tbody>
             <tr>
               <td className="py-2 text-muted-foreground">Beneficiary Account/Bank</td>
-              <td className="py-2 text-foreground text-right">{form.beneficiaryName} / {form.bankName}</td>
+              <td className="py-2 text-foreground text-right">{formData.beneficiaryName} / {formData.bankName}</td>
             </tr>
             <tr>
               <td className="py-2 text-muted-foreground">Amount</td>
-              <td className="py-2 text-foreground text-right">{form.currency} {form.amount || '0.00'}</td>
+              <td className="py-2 text-foreground text-right">{formData.currency} {formData.amount || '0.00'}</td>
             </tr>
             <tr>
               <td className="py-2 text-muted-foreground">Transaction Fee</td>

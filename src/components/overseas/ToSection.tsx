@@ -1,13 +1,17 @@
 import React from 'react';
+import { UseFormReturn } from 'react-hook-form';
+import { OverseasTransferFormData } from '@/lib/schemas/overseasTransferSchema';
 
 type ToSectionProps = {
-  beneficiaryName: string;
-  beneficiaryAccount: string;
-  bankName: string;
-  onChange: (field: 'beneficiaryName'|'beneficiaryAccount'|'bankName', value: string) => void;
+  form: UseFormReturn<OverseasTransferFormData>;
 };
 
-export default function ToSection({ beneficiaryName, beneficiaryAccount, bankName, onChange }: ToSectionProps) {
+export default function ToSection({ form }: ToSectionProps) {
+  const {
+    register,
+    formState: { errors },
+  } = form;
+
   return (
     <section className="mb-6">
       <h2 className="text-lg font-semibold mb-3">To</h2>
@@ -17,11 +21,16 @@ export default function ToSection({ beneficiaryName, beneficiaryAccount, bankNam
             Beneficiary Name
           </label>
           <input
-            className="w-full rounded-md border p-2"
-            value={beneficiaryName}
-            onChange={(e) => onChange('beneficiaryName', e.target.value)}
+            {...register('beneficiaryName')}
+            className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Beneficiary name"
+            aria-invalid={!!errors.beneficiaryName}
           />
+          {errors.beneficiaryName && (
+            <p className="text-sm text-destructive mt-1" role="alert">
+              {errors.beneficiaryName.message}
+            </p>
+          )}
         </div>
 
         <div>
@@ -29,23 +38,33 @@ export default function ToSection({ beneficiaryName, beneficiaryAccount, bankNam
             Beneficiary Account / IBAN
           </label>
           <input
-            className="w-full rounded-md border p-2"
-            value={beneficiaryAccount}
-            onChange={(e) => onChange('beneficiaryAccount', e.target.value)}
+            {...register('beneficiaryAccount')}
+            className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Account / IBAN"
+            aria-invalid={!!errors.beneficiaryAccount}
           />
+          {errors.beneficiaryAccount && (
+            <p className="text-sm text-destructive mt-1" role="alert">
+              {errors.beneficiaryAccount.message}
+            </p>
+          )}
         </div>
 
-        <div>
+        <div className="md:col-span-2">
           <label className="block text-sm text-muted-foreground mb-1">
             Beneficiary Bank Name
           </label>
           <input
-            className="w-full rounded-md border p-2"
-            value={bankName}
-            onChange={(e) => onChange('bankName', e.target.value)}
+            {...register('bankName')}
+            className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Bank name"
+            aria-invalid={!!errors.bankName}
           />
+          {errors.bankName && (
+            <p className="text-sm text-destructive mt-1" role="alert">
+              {errors.bankName.message}
+            </p>
+          )}
         </div>
       </div>
     </section>

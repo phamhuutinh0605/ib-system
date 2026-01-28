@@ -1,24 +1,13 @@
 import React from 'react';
-
-type TransferFormState = {
-  fromAccount: string;
-  beneficiaryName: string;
-  beneficiaryAccount: string;
-  bankName: string;
-  amount: string;
-  currency: string;
-  purpose: string;
-  instruction: string;
-  confirmPurpose: boolean;
-};
+import { OverseasTransferFormData } from '@/lib/schemas/overseasTransferSchema';
 
 type VerifyStepProps = {
-  form: TransferFormState;
+  formData: OverseasTransferFormData;
   onPrev: () => void;
   onConfirm: () => void;
 };
 
-export default function VerifyStep({ form, onPrev, onConfirm }: VerifyStepProps) {
+export default function VerifyStep({ formData, onPrev, onConfirm }: VerifyStepProps) {
   return (
     <div className="bg-card rounded-lg border p-6 mb-6">
       <h2 className="text-lg font-semibold mb-4">Verify Overseas single transfer</h2>
@@ -28,29 +17,29 @@ export default function VerifyStep({ form, onPrev, onConfirm }: VerifyStepProps)
           <tbody>
             <tr>
               <td className="py-2 text-muted-foreground">Debit Account</td>
-              <td className="py-2 text-foreground text-right">{form.fromAccount}</td>
+              <td className="py-2 text-foreground text-right">{formData.fromAccount}</td>
             </tr>
             <tr>
               <td className="py-2 text-muted-foreground">Beneficiary</td>
-              <td className="py-2 text-foreground text-right">{form.beneficiaryName}</td>
+              <td className="py-2 text-foreground text-right">{formData.beneficiaryName}</td>
             </tr>
             <tr>
               <td className="py-2 text-muted-foreground">Account / IBAN</td>
-              <td className="py-2 text-foreground text-right">{form.beneficiaryAccount}</td>
+              <td className="py-2 text-foreground text-right">{formData.beneficiaryAccount}</td>
             </tr>
             <tr>
               <td className="py-2 text-muted-foreground">Bank</td>
-              <td className="py-2 text-foreground text-right">{form.bankName}</td>
+              <td className="py-2 text-foreground text-right">{formData.bankName}</td>
             </tr>
             <tr>
               <td className="py-2 text-muted-foreground">Amount</td>
               <td className="py-2 text-foreground text-right">
-                {form.currency} {form.amount || '0.00'}
+                {formData.currency} {formData.amount || '0.00'}
               </td>
             </tr>
             <tr>
               <td className="py-2 text-muted-foreground">Purpose</td>
-              <td className="py-2 text-foreground text-right">{form.purpose}</td>
+              <td className="py-2 text-foreground text-right">{formData.purpose}</td>
             </tr>
           </tbody>
         </table>

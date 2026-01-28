@@ -9,7 +9,8 @@ import ToSection from '@/components/overseas/ToSection';
 import AmountSection from '@/components/overseas/AmountSection';
 import InformationSection from '@/components/overseas/InformationSection';
 import ConfirmationSection from '@/components/overseas/ConfirmationSection';
-import { useCallback, useState } from 'react';
+import { useOverseasTransferForm } from '@/hooks/useOverseasTransferForm';
+import { useState } from 'react';
 
 const BREADCRUMB_ITEMS = [
   { label: 'Remit', href: '/remit' },
@@ -17,44 +18,13 @@ const BREADCRUMB_ITEMS = [
   { label: 'Overseas Single Transfer', active: true },
 ];
 
-type TransferFormState = {
-  fromAccount: string;
-  beneficiaryName: string;
-  beneficiaryAccount: string;
-  bankName: string;
-  amount: string;
-  currency: string;
-  purpose: string;
-  instruction: string;
-  confirmPurpose: boolean;
-};
-
 export function OverseasSingleTransferPage() {
-  const [form, setForm] = useState<TransferFormState>({
-    fromAccount: '123-456-7890',
-    beneficiaryName: '',
-    beneficiaryAccount: '',
-    bankName: '',
-    amount: '',
-    currency: 'USD',
-    purpose: '',
-    instruction: '',
-    confirmPurpose: false,
-  });
+  const { form, formData, isValid, handleSubmit } = useOverseasTransferForm();
   const [step, setStep] = useState<number>(1);
 
-  const handleChange = useCallback(
-    (field: keyof TransferFormState, value: string | boolean) => {
-      setForm((prev) => ({ ...prev, [field]: value }));
-    },
-    []
-  );
-
-  const handleSubmit = useCallback((e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    // Move to verification step
+  const handleFormSubmit = async () => {
     setStep(2);
-  }, []);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -83,58 +53,36 @@ export function OverseasSingleTransferPage() {
           </InfoBox>
         </div>
         {step === 1 && (
-          <form className="bg-card rounded-lg border p-6 mb-6" onSubmit={handleSubmit}>
-            <FromSection
-              fromAccount={form.fromAccount}
-              onChange={(field, value) => handleChange(field, value)}
-            />
+          <form
+            className="bg-card rounded-lg border p-6 mb-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(handleFormSubmit);
+            }}
+          >
+            <FromSection form={form} />
 
-            <ToSection
-              beneficiaryName={form.beneficiaryName}
-              beneficiaryAccount={form.beneficiaryAccount}
-              bankName={form.bankName}
-              onChange={(field, value) => handleChange(field, value)}
-            />
+            <ToSection form={form} />
 
-            <AmountSection
-              currency={form.currency}
-              amount={form.amount}
-              onChange={(field, value) => handleChange(field, value)}
-            />
+            <AmountSection form={form} />
 
-            <InformationSection
-              purpose={form.purpose}
-              instruction={form.instruction}
-              onChange={(field, value) => handleChange(field, value)}
-            />
+            <InformationSection form={form} />
 
             <ConfirmationSection
-              confirmPurpose={form.confirmPurpose}
-              onChange={(field, value) => handleChange(field, value)}
-              onReset={() =>
-                setForm((prev) => ({
-                  ...prev,
-                  beneficiaryName: '',
-                  beneficiaryAccount: '',
-                  bankName: '',
-                  amount: '',
-                  purpose: '',
-                  instruction: '',
-                  confirmPurpose: false,
-                }))
-              }
+              form={form}
               onNext={() => setStep(2)}
-              disableNext={!form.confirmPurpose}
+              disableNext={!isValid}
             />
           </form>
         )}
 
         {step === 2 && (
           <VerifyStep
-            form={form}
+            formData={formData}
             onPrev={() => setStep(1)}
             onConfirm={() => {
-              // simulate processing then go to complete
+              // In a real application, this would trigger the actual transfer
+              // For now, simulate processing then go to complete
               setStep(3);
             }}
           />
@@ -142,24 +90,14 @@ export function OverseasSingleTransferPage() {
 
         {step === 3 && (
           <CompleteStep
-            form={form}
+            formData={formData}
             onContinue={() => {
-              // reset and go back to step 1
-              setForm({
-                fromAccount: form.fromAccount,
-                beneficiaryName: '',
-                beneficiaryAccount: '',
-                bankName: '',
-                amount: '',
-                currency: form.currency,
-                purpose: '',
-                instruction: '',
-                confirmPurpose: false,
-              });
+              // Reset form and go back to step 1
+              form.reset();
               setStep(1);
             }}
             onNext={() => {
-              // placeholder for next actions
+              // Placeholder for next actions (e.g., navigate to transaction history)
               alert('Next step clicked (mock)');
             }}
           />
